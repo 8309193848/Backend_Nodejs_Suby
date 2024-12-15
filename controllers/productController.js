@@ -25,8 +25,8 @@ const upload = multer({ storage: storage });
 
 const addProduct = async (req, res) => {
   try {
-    const { productName, price, category, bestSeller, description } = req.body;
-    const image = req.file ? req.file.filename : undefined;
+    const { productName, price, category, bestSeller, description, image } = req.body;
+    // const image = req.file ? req.file.filename : undefined;
 
     const firmId = req.params.firmId;
     const firm = await Firm.findById(firmId);
@@ -81,18 +81,22 @@ const deleteProductById = async(req,res)=>{
   try {
     const productId  =req.params.productId;
 
-    const deleteProduct = await product.findByIdAndDelete(productId);
+    const deleteProduct = await Product.findByIdAndDelete(productId);
+
       
     if(!deleteProduct){
       return res.status (404).json({error:"No product found"});
-
     }
+
+    return res.status(200).json({message: "Product deleted successfully"});
     
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
     
   }
+
+  getproductByFirm();
 }
 
 module.exports = { addProduct: [upload.single("image"), addProduct] ,getproductByFirm,deleteProductById};
